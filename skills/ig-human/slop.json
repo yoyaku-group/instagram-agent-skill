@@ -630,6 +630,91 @@
       "find": "hack",
       "replace": "trick",
       "family": "nouns"
+    },
+    {
+      "find": "n'hésitez pas à",
+      "replace": "vous pouvez",
+      "family": "connectives"
+    },
+    {
+      "find": "il est important de noter que",
+      "replace": "",
+      "family": "connectives"
+    },
+    {
+      "find": "force est de constater que",
+      "replace": "",
+      "family": "connectives"
+    },
+    {
+      "find": "à l'ère du numérique",
+      "replace": "aujourd'hui",
+      "family": "nouns"
+    },
+    {
+      "find": "sans plus attendre",
+      "replace": "",
+      "family": "openers"
+    },
+    {
+      "find": "ne manquez pas",
+      "replace": "",
+      "family": "closers"
+    },
+    {
+      "find": "restez jusqu'à la fin",
+      "replace": "",
+      "family": "openers"
+    },
+    {
+      "find": "abonnez-vous pour plus",
+      "replace": "",
+      "family": "closers"
+    },
+    {
+      "find": "commentez ci-dessous",
+      "replace": "",
+      "family": "closers"
+    },
+    {
+      "find": "l'algorithme adore",
+      "replace": "Instagram pousse",
+      "family": "nouns"
+    },
+    {
+      "find": "propulsé par l'IA",
+      "replace": "",
+      "family": "nouns"
+    },
+    {
+      "find": "grâce à l'IA",
+      "replace": "",
+      "family": "connectives"
+    },
+    {
+      "find": "intelligence artificielle",
+      "replace": "",
+      "family": "nouns"
+    },
+    {
+      "find": "notre IA",
+      "replace": "",
+      "family": "nouns"
+    },
+    {
+      "find": "AI-powered",
+      "replace": "",
+      "family": "adjectives"
+    },
+    {
+      "find": "powered by AI",
+      "replace": "",
+      "family": "adjectives"
+    },
+    {
+      "find": "auto-generated",
+      "replace": "",
+      "family": "adjectives"
     }
   ],
   "phrases": [
@@ -922,6 +1007,36 @@
       "find": "go viral overnight",
       "replace": "get reach",
       "family": "nouns"
+    },
+    {
+      "find": "bienvenue dans cette vidéo",
+      "replace": "",
+      "family": "openers"
+    },
+    {
+      "find": "comme vous le savez",
+      "replace": "",
+      "family": "openers"
+    },
+    {
+      "find": "je suis ravi de partager",
+      "replace": "",
+      "family": "openers"
+    },
+    {
+      "find": "nous sommes ravis de partager",
+      "replace": "",
+      "family": "openers"
+    },
+    {
+      "find": "n'oubliez pas de",
+      "replace": "",
+      "family": "closers"
+    },
+    {
+      "find": "en résumé",
+      "replace": "",
+      "family": "closers"
     }
   ],
   "structures": [
