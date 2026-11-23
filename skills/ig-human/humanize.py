@@ -18,12 +18,20 @@ Structural tells (rule-of-three, "not just X, it's Y", hashtag walls) are
 REPORTED, never auto-rewritten - rewriting a sentence's shape needs judgement,
 so that is the model's job, not a regex's.
 
+Language
+  French and English are handled natively: the punctuation cleanup respects
+  French spacing (a space before ; : ! ? is correct French, not an artefact)
+  and the lexical pass uses the French block of the lexicon. Before 2026-11-23
+  the cleanup turned "Objet :" into "Objet:", ate a line-final comma and
+  stripped the French entries that did not exist yet.
+
 Usage
   python3 humanize.py draft.txt
   python3 humanize.py draft.txt --report
   pbpaste | python3 humanize.py - --report
   python3 humanize.py draft.txt --json
   python3 humanize.py draft.txt -o clean.txt
+  python3 humanize.py draft.txt --lang fr      # force a language
 """
 
 import argparse
@@ -38,11 +46,60 @@ LEX = os.path.join(HERE, "slop.json")
 
 URL_RE = re.compile(r"https?://\S+|www\.\S+|\S+@\S+\.\S+")
 SENT_RE = re.compile(r"[^.!?\n]+[.!?]*")
+WORD_RE = re.compile(r"[^\W\d_]+", re.UNICODE)
+
+# Apostrophe variants are one character to a reader and three to a regex.
+APOSTROPHES = "'’‘ʼ`"
+
+_STOPWORDS = {
+    "fr": set("""le la les des du une et est que qui pour dans sur avec pas
+        nous vous ils elles ce cette ces au aux par plus mais ou donc car ne
+        se son sa ses leur leurs on tout tous être avoir fait comme aussi
+        chaque aucun""".split()),
+    "en": set("""the of and to in is it that for with you we they this are
+        was be as at but not have from your our on by an or if when
+        what which there""".split()),
+}
 
 
 def load_lexicon(path=LEX):
     with open(path, encoding="utf-8") as fh:
         return json.load(fh)
+
+
+def detect_language(text):
+    """Return 'fr' or 'en'. Ties and empty input fall back to 'en'."""
+    toks = [w.lower() for w in WORD_RE.findall(text)]
+    if not toks:
+        return "en"
+    counts = {lang: sum(1 for t in toks if t in stops) for lang, stops in _STOPWORDS.items()}
+    accented = sum(1 for t in toks if any(c in "àâäéèêëîïôöùûüÿçœæ" for c in t))
+    counts["fr"] += accented * 2
+    return "fr" if counts["fr"] > counts["en"] else "en"
+
+
+def lexicon_for(lex, lang):
+    """Shared entries plus this language's block. Never mix EN slop into FR."""
+    block = lex.get(lang) or {}
+    return (lex.get("words", []) + block.get("words", []),
+            lex.get("phrases", []) + block.get("phrases", []),
+            lex.get("structures", []) + block.get("structures", []))
+
+
+def entry_pattern(find):
+    """Boundary-correct, apostrophe-tolerant pattern for a lexicon entry.
+
+    `\\b` is wrong on both ends for French: it never matches next to an
+    elision ("n'hésitez"), and it silently fails when the entry itself opens
+    on an apostrophe. Unicode-aware lookarounds do the same job and do not
+    depend on the entry's first character being a letter.
+    """
+    esc = re.escape(find).replace(r"\ ", r"\s+")
+    for ap in APOSTROPHES:
+        esc = esc.replace(re.escape(ap), "[%s]" % re.escape(APOSTROPHES))
+    if not esc:
+        return None
+    return r"(?<![^\W\d_])" + esc + r"(?![^\W\d_])"
 
 
 def _cp(spec):
@@ -93,7 +150,7 @@ def pass_invisible(text, lex):
     return text, hits
 
 
-def pass_typographic(text, lex):
+def pass_typographic(text, lex, lang="en"):
     hits = []
     for entry in lex["typographic"]:
         ch = entry["from"]
@@ -111,8 +168,15 @@ def pass_typographic(text, lex):
         else:
             text = text.replace(ch, entry["to"])
     # A comma inserted before existing punctuation reads wrong.
-    text = re.sub(r",\s*([,.;:!?])", r"\1", text)
-    text = re.sub(r",\s*\n", "\n", text)
+    text = re.sub(r",\s*([,.;])", r"\1", text)
+    # French sets a space BEFORE ; : ! ? — never strip it there. English does
+    # not, so the strip is confined to English. (This rule used to run on both
+    # and rewrote "Objet :" as "Objet:".)
+    if lang != "fr":
+        text = re.sub(r"\s+([:!?])", r"\1", text)
+    # A line-final comma is ordinary punctuation ("Merci,\nBenjamin"), not an
+    # artefact. Only trailing whitespace is cleaned.
+    text = re.sub(r"[ \t]+$", "", text, flags=re.MULTILINE)
     return text, hits
 
 
@@ -126,19 +190,20 @@ def _match_case(src, repl):
     return repl
 
 
-def pass_lexical(text, lex):
+def pass_lexical(text, lex, lang="en"):
     """Replace slop words and phrases. Longest first so phrases win."""
     hits = []
-    entries = sorted(lex["phrases"] + lex["words"],
-                     key=lambda e: len(e["find"]), reverse=True)
+    words_l, phrases_l, _ = lexicon_for(lex, lang)
+    entries = sorted(words_l + phrases_l, key=lambda e: len(e["find"]), reverse=True)
     for entry in entries:
-        find = entry["find"]
-        pattern = re.compile(r"\b" + re.escape(find).replace(r"\ ", r"\s+") + r"\b",
-                             re.IGNORECASE)
+        rx = entry_pattern(entry["find"])
+        if not rx:
+            continue
+        pattern = re.compile(rx, re.IGNORECASE)
         found = pattern.findall(text)
         if not found:
             continue
-        hits.append({"find": find, "replace": entry["replace"] or "(deleted)",
+        hits.append({"find": entry["find"], "replace": entry["replace"] or "(deleted)",
                      "count": len(found), "family": entry["family"]})
         text = pattern.sub(lambda m: _match_case(m.group(0), entry["replace"]), text)
     # Clean up after deletions. Deleting a whole clause leaves orphaned
@@ -148,7 +213,9 @@ def pass_lexical(text, lex):
     text = re.sub(r"(?m)^[ \t]*(?:[,.;:]+[ \t]*)+", "", text)
     text = re.sub(r"(?m)^[ \t](?=\S)", "", text)       # one space left by a deletion.
                                                       # Deeper indents are deliberate.
-    text = re.sub(r"\s+([,.;:!?])", r"\1", text)
+    text = re.sub(r"\s+([,.])", r"\1", text)
+    if lang != "fr":
+        text = re.sub(r"\s+([:!?])", r"\1", text)
     text = re.sub(r",\s*([,.;:!?])", r"\1", text)      # an em dash became a comma,
                                                       # then the clause after it went
     text = text.replace("...", "\x00ELL\x00")          # protect real ellipses
@@ -164,9 +231,10 @@ def pass_lexical(text, lex):
     return text, hits
 
 
-def scan_structures(text, lex):
+def scan_structures(text, lex, lang="en"):
     flags = []
-    for s in lex["structures"]:
+    _, _, structures = lexicon_for(lex, lang)
+    for s in structures:
         try:
             pattern = re.compile(s["regex"], re.MULTILINE)
         except re.error:
@@ -195,27 +263,30 @@ def restore_capitals(original, text):
     Only fix it for writers who capitalise their sentences in the first place:
     a deliberately lower-case voice is a style, not an artefact, and shouting
     over it would be exactly the kind of thing this script exists to stop.
+    Accented capitals count - "À toutes les équipes" opens many French notes.
     """
-    starts = re.findall(r"(?:^|[.!?]\s+|\n)\s*([A-Za-z])", original)
+    starts = re.findall(r"(?:^|[.!?]\s+|\n)\s*([^\W\d_])", original)
     if not starts or sum(1 for c in starts if c.isupper()) * 2 < len(starts):
         return text
-    return re.sub(r"(?:^|(?<=[.!?] )|(?<=[.!?]\n)|(?<=\n))\s*([a-z])",
-                  lambda m: m.group(0)[:-1] + m.group(1).upper(), text)
+    return re.sub(r"(?:^|(?<=[.!?] )|(?<=[.!?]\n)|(?<=\n))\s*([^\W\d_])",
+                  lambda m: m.group(0)[:-len(m.group(1))] + m.group(1).upper(), text)
 
 
-def humanize(text, lex):
+def humanize(text, lex, lang=None):
+    lang = lang or detect_language(text)
     raw_for_case = text
     text, urls = protect_urls(text)
     text, inv = pass_invisible(text, lex)
-    text, typo = pass_typographic(text, lex)
-    text, lexi = pass_lexical(text, lex)
+    text, typo = pass_typographic(text, lex, lang)
+    text, lexi = pass_lexical(text, lex, lang)
     text = restore_capitals(raw_for_case, text)
     text = restore_urls(text, urls)
     return text.strip() + "\n", {
+        "language": lang,
         "invisible": inv,
         "typographic": typo,
         "lexical": lexi,
-        "structures": scan_structures(text, lex),
+        "structures": scan_structures(text, lex, lang),
     }
 
 
@@ -227,7 +298,7 @@ def render_report(report, out=sys.stderr):
         + sum(h["count"] for h in report["typographic"]) \
         + sum(h["count"] for h in report["lexical"])
 
-    head("HUMANIZE REPORT")
+    head(f"HUMANIZE REPORT  [{report.get('language', 'en')}]")
     print(f"{total} machine artefacts removed, "
           f"{len(report['structures'])} structural tells flagged for rewrite", file=out)
 
@@ -247,7 +318,8 @@ def render_report(report, out=sys.stderr):
         head("4. STRUCTURAL TELLS  (not auto-fixed - rewrite these yourself)")
         for h in report["structures"]:
             print(f"  {h['count']:>3}x  {h['name']}\n        {h['fix']}", file=out)
-    if not any(report.values()):
+    if not (report["invisible"] or report["typographic"]
+            or report["lexical"] or report["structures"]):
         head("CLEAN")
         print("  Nothing to strip.", file=out)
     print("", file=out)
@@ -259,12 +331,13 @@ def main():
     ap.add_argument("-o", "--out", help="write cleaned text here instead of stdout")
     ap.add_argument("--report", action="store_true", help="print what changed, to stderr")
     ap.add_argument("--json", action="store_true", help="emit {text, report} as JSON")
+    ap.add_argument("--lang", choices=["en", "fr"], help="force a language instead of detecting")
     ap.add_argument("--lexicon", default=LEX, help="path to slop.json")
     args = ap.parse_args()
 
     raw = sys.stdin.read() if args.input == "-" else open(args.input, encoding="utf-8").read()
     lex = load_lexicon(args.lexicon)
-    clean, report = humanize(raw, lex)
+    clean, report = humanize(raw, lex, args.lang)
 
     if args.json:
         print(json.dumps({"text": clean, "report": report}, indent=2, ensure_ascii=False))

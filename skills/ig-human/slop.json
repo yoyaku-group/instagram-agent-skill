@@ -1,6 +1,6 @@
 {
-  "version": "1.0",
-  "note": "Lexicon used by humanize.py and detect.py. Replacements are plain-English and keep the sentence grammatical. The last block of each list is Instagram-specific: caption and voiceover slop that does not show up on other platforms. Edit freely - it is meant to be yours.",
+  "version": "2.0",
+  "note": "Lexicon used by humanize.py and detect.py. Replacements are plain language and keep the sentence grammatical. `words`/`phrases`/`structures` are shared English entries; the `fr` block below carries French entries and is merged ONLY when the text is detected (or forced) as French, so English slop never fires on French copy. Entries are matched with unicode word boundaries and tolerate ' and apostrophe variants. Edit freely - it is meant to be yours.",
   "invisible": [
     {
       "cp": "U+200B",
@@ -1021,5 +1021,510 @@
       "name": "Reflex follow or tag bait",
       "fix": "Ask for the one action this post actually earns. The generic ask trains the audience to ignore every ask."
     }
-  ]
+  ],
+  "fr": {
+    "note": "French block (added 2026-11-23). These are the markers French LLM output defaults to. Kept deliberately narrow: a word that is ordinary French business vocabulary (accompagner, expertise, performant) is NOT here.",
+    "words": [
+      {
+        "find": "véritable",
+        "replace": "vrai",
+        "family": "adjectives"
+      },
+      {
+        "find": "incontournable",
+        "replace": "essentiel",
+        "family": "adjectives"
+      },
+      {
+        "find": "robuste",
+        "replace": "solide",
+        "family": "adjectives"
+      },
+      {
+        "find": "innovant",
+        "replace": "nouveau",
+        "family": "adjectives"
+      },
+      {
+        "find": "innovante",
+        "replace": "nouvelle",
+        "family": "adjectives"
+      },
+      {
+        "find": "révolutionnaire",
+        "replace": "nouveau",
+        "family": "adjectives"
+      },
+      {
+        "find": "révolutionner",
+        "replace": "changer",
+        "family": "verbs"
+      },
+      {
+        "find": "optimal",
+        "replace": "meilleur",
+        "family": "adjectives"
+      },
+      {
+        "find": "optimale",
+        "replace": "meilleure",
+        "family": "adjectives"
+      },
+      {
+        "find": "optimiser",
+        "replace": "améliorer",
+        "family": "verbs"
+      },
+      {
+        "find": "maximiser",
+        "replace": "augmenter",
+        "family": "verbs"
+      },
+      {
+        "find": "capitaliser sur",
+        "replace": "profiter de",
+        "family": "verbs"
+      },
+      {
+        "find": "tirer parti de",
+        "replace": "profiter de",
+        "family": "verbs"
+      },
+      {
+        "find": "mettre en lumière",
+        "replace": "montrer",
+        "family": "verbs"
+      },
+      {
+        "find": "mettre en exergue",
+        "replace": "montrer",
+        "family": "verbs"
+      },
+      {
+        "find": "s'inscrire dans",
+        "replace": "faire partie de",
+        "family": "verbs"
+      },
+      {
+        "find": "s'articule autour de",
+        "replace": "repose sur",
+        "family": "verbs"
+      },
+      {
+        "find": "au cœur de",
+        "replace": "dans",
+        "family": "connectives"
+      },
+      {
+        "find": "au service de",
+        "replace": "pour",
+        "family": "connectives"
+      },
+      {
+        "find": "à l'ère de",
+        "replace": "avec",
+        "family": "connectives"
+      },
+      {
+        "find": "dans un monde où",
+        "replace": "quand",
+        "family": "connectives"
+      },
+      {
+        "find": "force est de constater que",
+        "replace": "",
+        "family": "connectives"
+      },
+      {
+        "find": "il est à noter que",
+        "replace": "notez que",
+        "family": "connectives"
+      },
+      {
+        "find": "holistique",
+        "replace": "global",
+        "family": "adjectives"
+      },
+      {
+        "find": "sur-mesure",
+        "replace": "adapté",
+        "family": "adjectives"
+      },
+      {
+        "find": "clé en main",
+        "replace": "prêt à l'emploi",
+        "family": "adjectives"
+      },
+      {
+        "find": "synergie",
+        "replace": "coopération",
+        "family": "nouns"
+      },
+      {
+        "find": "levier",
+        "replace": "moyen",
+        "family": "nouns"
+      },
+      {
+        "find": "disruptif",
+        "replace": "nouveau",
+        "family": "adjectives"
+      },
+      {
+        "find": "disruptive",
+        "replace": "nouvelle",
+        "family": "adjectives"
+      },
+      {
+        "find": "scalable",
+        "replace": "extensible",
+        "family": "adjectives"
+      },
+      {
+        "find": "impactant",
+        "replace": "fort",
+        "family": "adjectives"
+      },
+      {
+        "find": "impactante",
+        "replace": "forte",
+        "family": "adjectives"
+      },
+      {
+        "find": "enrichissant",
+        "replace": "utile",
+        "family": "adjectives"
+      },
+      {
+        "find": "inspirant",
+        "replace": "qui donne des idées",
+        "family": "adjectives"
+      },
+      {
+        "find": "pléthore de",
+        "replace": "beaucoup de",
+        "family": "nouns"
+      },
+      {
+        "find": "pléthore",
+        "replace": "beaucoup",
+        "family": "nouns"
+      },
+      {
+        "find": "myriade de",
+        "replace": "beaucoup de",
+        "family": "nouns"
+      },
+      {
+        "find": "dans l'écosystème",
+        "replace": "dans le milieu",
+        "family": "nouns"
+      }
+    ],
+    "phrases": [
+      {
+        "find": "n'hésitez pas à",
+        "replace": "",
+        "family": "closers"
+      },
+      {
+        "find": "n'hésitez surtout pas à",
+        "replace": "",
+        "family": "closers"
+      },
+      {
+        "find": "n'hésite pas à",
+        "replace": "",
+        "family": "closers"
+      },
+      {
+        "find": "il est important de noter que",
+        "replace": "notez que",
+        "family": "openers"
+      },
+      {
+        "find": "il convient de noter que",
+        "replace": "notez que",
+        "family": "openers"
+      },
+      {
+        "find": "il est important de souligner que",
+        "replace": "notez que",
+        "family": "openers"
+      },
+      {
+        "find": "il est essentiel de",
+        "replace": "il faut",
+        "family": "openers"
+      },
+      {
+        "find": "il est crucial de",
+        "replace": "il faut",
+        "family": "openers"
+      },
+      {
+        "find": "dans cet article",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "dans cette vidéo",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "dans ce post",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "aujourd'hui, plus que jamais",
+        "replace": "aujourd'hui",
+        "family": "openers"
+      },
+      {
+        "find": "plus que jamais",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "à l'heure où",
+        "replace": "quand",
+        "family": "connectives"
+      },
+      {
+        "find": "dans un contexte où",
+        "replace": "quand",
+        "family": "connectives"
+      },
+      {
+        "find": "propulsé par l'IA",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "propulsée par l'IA",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "boosté par l'IA",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "boostée par l'IA",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "l'IA au service de",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "passez au niveau supérieur",
+        "replace": "",
+        "family": "closers"
+      },
+      {
+        "find": "prêt à passer au niveau supérieur",
+        "replace": "",
+        "family": "closers"
+      },
+      {
+        "find": "ne scrollez plus",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "arrêtez de scroller",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "abonnez-vous pour plus",
+        "replace": "",
+        "family": "closers"
+      },
+      {
+        "find": "identifiez quelqu'un qui",
+        "replace": "",
+        "family": "closers"
+      },
+      {
+        "find": "restes-y jusqu'à la fin",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "restez jusqu'à la fin",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "vous ne devinerez jamais",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "ce que personne ne vous dit",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "personne n'en parle",
+        "replace": "peu de gens le font",
+        "family": "openers"
+      },
+      {
+        "find": "c'est simple, non ?",
+        "replace": "",
+        "family": "closers"
+      },
+      {
+        "find": "la suite au prochain épisode",
+        "replace": "",
+        "family": "closers"
+      },
+      {
+        "find": "spoiler :",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "plongeons dans les détails",
+        "replace": "voici le détail",
+        "family": "openers"
+      },
+      {
+        "find": "plongeons ensemble",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "en constante évolution",
+        "replace": "",
+        "family": "clichés"
+      },
+      {
+        "find": "dans un paysage en pleine",
+        "replace": "",
+        "family": "clichés"
+      },
+      {
+        "find": "à l'heure du numérique",
+        "replace": "",
+        "family": "clichés"
+      },
+      {
+        "find": "une expérience unique",
+        "replace": "",
+        "family": "clichés"
+      },
+      {
+        "find": "sans plus attendre",
+        "replace": "",
+        "family": "openers"
+      },
+      {
+        "find": "à n'en pas douter",
+        "replace": "",
+        "family": "clichés"
+      },
+      {
+        "find": "c'est là tout l'enjeu",
+        "replace": "",
+        "family": "clichés"
+      },
+      {
+        "find": "un vrai game changer",
+        "replace": "",
+        "family": "anglicismes"
+      },
+      {
+        "find": "game changer",
+        "replace": "",
+        "family": "anglicismes"
+      },
+      {
+        "find": "next level",
+        "replace": "",
+        "family": "anglicismes"
+      },
+      {
+        "find": "en bon français",
+        "replace": "",
+        "family": "openers"
+      }
+    ],
+    "structures": [
+      {
+        "id": "not-just-fr",
+        "regex": "(?i)\\bce n['’]est pas (?:(?:seulement|juste)\\s+une?|qu['’]une?)\\b[^.!?\\n]{2,60}[,.] c['’]est\\b",
+        "name": "« Ce n'est pas X, c'est Y » (révélation en deux temps)",
+        "fix": "Dites directement ce que c'est. La formule existe pour créer un effet, pas pour informer."
+      },
+      {
+        "id": "not-only-fr",
+        "regex": "(?i)\\bnon seulement\\b[^.!?\\n]{2,80}\\bmais (?:aussi|également)\\b",
+        "name": "« Non seulement X mais aussi Y »",
+        "fix": "Deux phrases, ou une seule avec la vraie priorité. La double clause dilue les deux."
+      },
+      {
+        "id": "the-result-fr",
+        "regex": "(?i)^\\s*(?:le résultat|le meilleur|le hic|le piège|le problème)\\s*\\?\\s*$",
+        "name": "Ligne-question rhétorique d'un seul mot",
+        "fix": "Posez la question en entier, ou répondez directement à la ligne suivante."
+      },
+      {
+        "id": "heres-what-fr",
+        "regex": "(?i)\\bvoici ce que (?:j'ai|nous avons) appris\\b",
+        "name": "« Voici ce que j'ai appris »",
+        "fix": "Nommez directement la chose apprise."
+      },
+      {
+        "id": "triad-fr",
+        "regex": "(?i)\\b\\w+, \\w+ et \\w+\\.",
+        "name": "Triade de trois éléments",
+        "fix": "Gardez les deux qui comptent. Trois éléments alignés sont une signature de machine."
+      },
+      {
+        "id": "as-an-ai-fr",
+        "regex": "(?i)\\ben tant qu['’]? ?(?:ia|intelligence artificielle|modèle de langage)\\b",
+        "name": "« En tant qu'IA »",
+        "fix": "Supprimez la phrase. Personne n'a besoin de savoir qui parle."
+      },
+      {
+        "id": "in-summary-fr",
+        "regex": "(?i)^\\s*(?:en résumé|pour résumer|en conclusion)\\b",
+        "name": "« En résumé » en ouverture d'alinéa",
+        "fix": "Le résumé qui répète ce qui précède n'ajoute rien. Coupez-le."
+      },
+      {
+        "id": "engagement-bait-fr",
+        "regex": "(?i)\\b(?:d'accord\\?|vous en pensez quoi\\s*\\?|qui d'autre\\b|j'ai tort\\?)",
+        "name": "Question-appât d'engagement",
+        "fix": "Demandez la seule action que ce post mérite vraiment."
+      },
+      {
+        "id": "stop-scroll-fr",
+        "regex": "(?im)^\\s*(?:ne scrollez plus|arrêtez de scroller|attends[,.]? ne scrolle pas)\\b",
+        "name": "« Ne scrollez plus »",
+        "fix": "Ouvrez sur le contenu. L'injonction est le tell le plus reconnaissable."
+      },
+      {
+        "id": "in-this-video-fr",
+        "regex": "(?i)\\b(?:dans (?:cette|cet) (?:vidéo|reel|post)|aujourd'hui je vais vous (?:montrer|apprendre)|je vais vous (?:montrer|apprendre) comment)\\b",
+        "name": "Annonce de sommaire (« dans cette vidéo »)",
+        "fix": "Commencez par le contenu. Le sommaire est la partie qu'on saute."
+      },
+      {
+        "id": "follow-bait-fr",
+        "regex": "(?i)\\b(?:abonnez-vous pour plus|identifiez quelqu'un qui|double tap si|partagez si|commentez si)\\b",
+        "name": "Appel à l'action réflexe",
+        "fix": "Demandez l'action que ce post gagne vraiment. L'appel générique entraîne à ignorer les suivants."
+      }
+    ]
+  }
 }
